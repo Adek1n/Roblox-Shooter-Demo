@@ -70,6 +70,10 @@ function WeaponBehavior.weaponCantDrop()
 	ContextActionService:UnbindAction("WeaponDrop")
 end
 --[[
+	There is no weaponpickup function because that is done on the server also everytime a weapon is picked up the handle gets destroyed so that when players equip it
+	doesnt stick the weapon out and conflict with the viewmodel
+]]
+--[[
 	EQUIP/UNEQUIP
 ]]
 
@@ -294,5 +298,6 @@ end
 type WeaponBehavior = typeof(WeaponBehavior)
 
 return WeaponBehavior :: WeaponBehavior
+
 
 
