@@ -3,7 +3,7 @@
     overrides the dropping and equipping tools that are designated as guns
     it also is responsible for m1 and m2 behavior
 
-	If you still need more clarification please just contact me I mostly online throughout the day.
+	If you still need more clarification please just contact me I am mostly online throughout the day.
 	Thanks
 ]]
 --!strict
@@ -295,3 +295,4 @@ end
 type WeaponBehavior = typeof(WeaponBehavior)
 
 return WeaponBehavior :: WeaponBehavior
+
