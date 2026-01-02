@@ -27,7 +27,6 @@ local GUIClient=require(ReplicatedStorage.Shared.Services.GUIService.GUIClient)
 --[[
 	SETTINGS
 ]]
---settings 
 local CREATE_TOUCH_BUTTON=false
 local AIMING_SWAY_AMOUNT=0.05
 local NOT_AIMING_SWAY_AMOUNT=0.1
@@ -295,4 +294,5 @@ end
 type WeaponBehavior = typeof(WeaponBehavior)
 
 return WeaponBehavior :: WeaponBehavior
+
 
