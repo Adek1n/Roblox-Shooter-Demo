@@ -70,9 +70,50 @@ function WeaponBehavior.weaponCantDrop()
 	ContextActionService:UnbindAction("WeaponDrop")
 end
 --[[
-	There is no weaponpickup function because that is done on the server also everytime a weapon is picked up the handle gets destroyed so that when players equip it
-	doesnt stick the weapon out and conflict with the viewmodel
+	Here is the server side functions
 ]]
+--all weapons are passed to this function
+function WeaponBehavior.weaponPickUp(weapon: Tool)
+	local toolCore=weapon:WaitForChild("Core")::BasePart
+	toolCore.Touched:Connect(function(hit)
+		local character=hit.Parent::Model
+		local player=Players:GetPlayerFromCharacter(character)
+		--if player exists and character does not already have the weapon
+		if player and not character:FindFirstChild(weapon.Name) then
+			local backpack=player:FindFirstChild("Backpack")
+			if(backpack)then
+				-- finds backup and and sends remoteevent to pickup the weapon for replication
+				ServerScriptService.Events.WeaponService.WeaponPickUp:Fire(player,weapon)
+				toolCore:Destroy()
+				weapon.Parent=backpack
+			end
+		end
+
+	end)
+end
+--drop function for the server
+function WeaponBehavior.weaponDropServer(player : Player,weapon: Tool)
+	local character=player.Character::Model
+	local foundWeapon=WeaponBehavior.findWeapon(character)
+	if(foundWeapon and foundWeapon==weapon) then
+		local weaponType1=foundWeapon:GetAttribute("Type1")
+		local weaponType2=foundWeapon:GetAttribute("Type2")
+		local weaponCore=ReplicatedStorage.Shared.Assets.Weapons:FindFirstChild(weaponType1):FindFirstChild(weaponType2):FindFirstChild(foundWeapon.Name):FindFirstChild("Core")
+		--directory of the weaponcore which is the visible and pickupable physical model in workspace
+		if(weaponCore) then
+			--if it exists create a new core for the dropped weapon
+			local weaponCoreClone=weaponCore:Clone()::BasePart
+			weaponCoreClone.Parent=foundWeapon
+			foundWeapon.PrimaryPart=weaponCoreClone
+			foundWeapon.Parent=workspace
+			--put the equipped weapon on workspace
+			local characterHead=character:FindFirstChild("Head")::BasePart
+			--drop it in drop distance where the character is looking
+			foundWeapon:PivotTo(characterHead.CFrame+characterHead.CFrame.LookVector*WEAPON_DROP_DISTANCE)
+			WeaponBehavior.weaponPickUp(foundWeapon)
+		end
+	end
+end
 --[[
 	EQUIP/UNEQUIP
 ]]
@@ -298,6 +339,7 @@ end
 type WeaponBehavior = typeof(WeaponBehavior)
 
 return WeaponBehavior :: WeaponBehavior
+
 
 
 
